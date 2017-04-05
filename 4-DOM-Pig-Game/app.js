@@ -55,7 +55,11 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     scores[activePlayer] += roundScore;
     document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
 
-    var threshold = document.getElementById('input-score').value;
+    // null, 0, "", undefined are coreced to false
+    // anything else is coreced to true
+    // var threshold = document.getElementById('input-score').value;
+    var threshold = document.querySelector('.final-score').value;
+    
     if (!threshold) {
         threshold = 20;
     }
