@@ -10,7 +10,7 @@ GAME RULES:
 */
 
 
-var scores, roundScore, activePlayer, isGamePlaying;
+var scores, roundScore, activePlayer, isGamePlaying, previousDice;
 
 init();
 
@@ -21,19 +21,25 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     }
     
     var dice = Math.floor(Math.random() * 6) + 1;
-    
     document.querySelector('.dice').style.display = 'block';
     document.querySelector('.dice').src = 'dice-' + dice + '.png';
 
     if (dice === 1) {
-        document.querySelector('#current-' + activePlayer).textContent = 0;
-
         nextPlayer();
     } else {
-        roundScore += dice;
-        
-        // ui update
-        document.querySelector('#current-' + activePlayer).textContent = roundScore;
+        if (previousDice === 6 && dice === 6) {
+            // clean the entire score of the activePlayer
+            scores[activePlayer] = 0;
+            document.querySelector('#score-' + activePlayer).textContent = '0';
+            nextPlayer();
+
+        } else {
+            console.log('check');
+            previousDice = dice;
+            roundScore += dice;
+            // ui update
+            document.querySelector('#current-' + activePlayer).textContent = roundScore;
+        }
     }
 });
 
@@ -60,12 +66,13 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 });
 
 document.querySelector('.btn-new').addEventListener('click', init);
-
+q
 function init() {
     scores = [0, 0];
     roundScore = 0;
     activePlayer = 0;
     isGamePlaying = true;
+    previousDice = 0;
     
     // ui init
     document.getElementById('score-0').textContent = '0';
@@ -89,6 +96,9 @@ function nextPlayer() {
     // active player, roundScore, highlight, current-#
     activePlayer = activePlayer ? 0 : 1;
     roundScore = 0;
+    previousDice = 0;
+
+    // update ui
     document.getElementById('current-0').textContent = '0';
     document.getElementById('current-1').textContent = '0';
     document.querySelector('.player-0-panel').classList.toggle('active');
