@@ -36,3 +36,45 @@ c) correct answer (I would use a number for this)
 
 */
 
+function Question(question, answers, correctAnswer) {
+    this.question = question;
+    this.answers = answers;
+    this.correctAnswer = correctAnswer;
+}
+
+var q1 = new Question('Who is the leading actor in Matrix?',
+                      ['robert downey', 'keanu reeves'],
+                      2);
+var q2 = new Question('Who is the leading actress in La La Land?',
+                      ['emma stone', 'emma waston'],
+                      1);
+var q3 = new Question('Who is the leading actor in Inception?',
+                      ['leonardo dicapio', 'joseph gordon'],
+                      1);
+
+var questions = [q1, q2, q3];
+
+
+// shuffle questions
+function shuffle(questions) {
+    
+    function randomIdx(range) {
+        return (Math.floor(Math.random() * 100)) % range;
+    }
+
+    var head = randomIdx(questions.length);
+    var shuffledQ = [];
+    
+    for (var i = head, j = 0; j < questions.length ; j++) {
+        shuffledQ.push(questions[i]);
+        i = (i + 1) % questions.length;
+    }
+    return shuffledQ;
+}
+
+// define constant
+var totalScore = 0;
+var eachPoint = 1;
+
+var shuffleQ = shuffle(questions);
+// console.log(shuffleQ);
