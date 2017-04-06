@@ -24,3 +24,15 @@ c) correct answer (I would use a number for this)
 */
 
 
+// expert level
+/*
+8. iteratively play game and record the score you get
+
+9. input "exit" to quit the game.
+
+10. track the user's score to make the game more fun. 1 questions, 1 point.
+
+11. display the score in the console. 
+
+*/
+
