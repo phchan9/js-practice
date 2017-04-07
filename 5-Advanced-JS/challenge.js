@@ -42,21 +42,8 @@ function Question(question, answers, correctAnswer) {
     this.correctAnswer = correctAnswer;
 }
 
-var q1 = new Question('Who is the leading actor in Matrix?',
-                      ['robert downey', 'keanu reeves'],
-                      2);
-var q2 = new Question('Who is the leading actress in La La Land?',
-                      ['emma stone', 'emma waston'],
-                      1);
-var q3 = new Question('Who is the leading actor in Inception?',
-                      ['leonardo dicapio', 'joseph gordon'],
-                      1);
-
-var questions = [q1, q2, q3];
-
-
-// shuffle questions
-function shuffle(questions) {
+// shuffle questions order
+function shuffleOrder(questions) {
     
     function randomIdx(range) {
         return (Math.floor(Math.random() * 100)) % range;
@@ -72,9 +59,50 @@ function shuffle(questions) {
     return shuffledQ;
 }
 
+function outputQuestionString(idx, q) {
+    var text = 'Q' + idx + '. ' + q.question + '\n';
+    for (var i = 0; i < q.answers.length; ++i) {
+        var answerLine = (i + 1) + '. ' + q.answers[i] + '\n';
+        text += answerLine;
+    }
+    return text;
+}
+        
 // define constant
+var q1 = new Question('Who is the leading actor in Matrix?',
+                      ['robert downey', 'keanu reeves'],
+                      2);
+var q2 = new Question('Who is the leading actress in La La Land?',
+                      ['emma stone', 'emma waston'],
+                      1);
+var q3 = new Question('Who is the leading actor in Inception?',
+                      ['leonardo dicapio', 'joseph gordon'],
+                      1);
+var questions = [q1, q2, q3];
 var totalScore = 0;
 var eachPoint = 1;
+var shuffleQ = shuffleOrder(questions);
 
-var shuffleQ = shuffle(questions);
-// console.log(shuffleQ);
+for( var i = 0; i < shuffleQ.length; ++i) {
+
+    var q = shuffleQ[i];
+    console.log(outputQuestionString(i + 1, q));
+    var ans = prompt('Your answer is: ');
+
+    if (ans === 'exit') {
+        console.log('You exit in the middle of the game.');
+        break;
+    }
+    
+    ans = parseInt(ans);
+    if (ans === q.correctAnswer) {
+        totalScore += eachPoint;
+        console.log('Correct Answer! You got '
+                    + totalScore + ' point(s).');
+    } else {
+        console.log('Wrong Answer! The correct answer is '
+                    + q.answers[q.correctAnswer - 1]
+                    + '. You still got ' + totalScore + ' point(s).');
+    }
+}
+console.log('Game Over.');
