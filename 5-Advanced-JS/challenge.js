@@ -36,49 +36,104 @@ c) correct answer (I would use a number for this)
 
 */
 
-function Question(question, answers, correctAnswer) {
-    this.question = question;
-    this.answers = answers;
-    this.correctAnswer = correctAnswer;
-}
+// for data privacy and not to interfere others
+(function() {
+    
+    function Question(question, answers, correctAnswer) {
+        this.question = question;
+        this.answers = answers;
+        this.correctAnswer = correctAnswer;
+    }
+    
+    // define constant
+    var q1 = new Question('Who is the leading actor in Matrix?',
+                          ['robert downey', 'keanu reeves'],
+                          2);
+    var q2 = new Question('Who is the leading actress in La La Land?',
+                          ['emma stone', 'emma waston'],
+                          1);
+    var q3 = new Question('Who is the leading actor in Inception?',
+                          ['leonardo dicapio', 'joseph gordon'],
+                          1);
+    var questions = [q1, q2, q3];
 
+    Question.prototype.displayQuestion = function() {
+        console.log(this.question);
+
+        for(var i = 0; i < this.answers.length; ++i) {
+            console.log((i + 1) + '. ' + this.answers[i]);
+        }
+    };
+
+    Question.prototype.checkAnswer = function(number, callback) {
+        var result = this.correctAnswer === number;
+        if(result) {
+            console.log('Correct Answer!');
+        } else {
+            console.log('Wrong Answer!');
+        }
+        
+        console.log('Your Point is ' + callback(result) + '.');
+    }
+
+    function score() {
+        var totalScore = 0;
+        function calc(result) {
+            if (result) {
+                totalScore++;
+            }
+            return totalScore;
+        }
+        return calc;
+    }
+
+    var keepScore = score();
+
+    function nextQuestions() {
+
+        var n = Math.floor(Math.random() * questions.length);
+        questions[n].displayQuestion();
+        var ans = prompt('Your answer is: ');
+
+        if (ans === 'exit') {
+            console.log('Game Over');
+            return;
+        } else {
+            questions[n].checkAnswer(parseInt(ans), keepScore);
+        }
+        
+        nextQuestions();
+    }
+
+    nextQuestions();
+})();
+
+/*
 // shuffle questions order
 function shuffleOrder(questions) {
-    
-    function randomIdx(range) {
-        return (Math.floor(Math.random() * 100)) % range;
-    }
 
-    var head = randomIdx(questions.length);
-    var shuffledQ = [];
-    
-    for (var i = head, j = 0; j < questions.length ; j++) {
-        shuffledQ.push(questions[i]);
-        i = (i + 1) % questions.length;
-    }
-    return shuffledQ;
+function randomIdx(range) {
+return (Math.floor(Math.random() * 100)) % range;
+}
+
+var head = randomIdx(questions.length);
+var shuffledQ = [];
+
+for (var i = head, j = 0; j < questions.length ; j++) {
+shuffledQ.push(questions[i]);
+i = (i + 1) % questions.length;
+}
+return shuffledQ;
 }
 
 function outputQuestionString(idx, q) {
-    var text = 'Q' + idx + '. ' + q.question + '\n';
-    for (var i = 0; i < q.answers.length; ++i) {
-        var answerLine = (i + 1) + '. ' + q.answers[i] + '\n';
-        text += answerLine;
-    }
-    return text;
+var text = 'Q' + idx + '. ' + q.question + '\n';
+for (var i = 0; i < q.answers.length; ++i) {
+var answerLine = (i + 1) + '. ' + q.answers[i] + '\n';
+text += answerLine;
 }
-        
-// define constant
-var q1 = new Question('Who is the leading actor in Matrix?',
-                      ['robert downey', 'keanu reeves'],
-                      2);
-var q2 = new Question('Who is the leading actress in La La Land?',
-                      ['emma stone', 'emma waston'],
-                      1);
-var q3 = new Question('Who is the leading actor in Inception?',
-                      ['leonardo dicapio', 'joseph gordon'],
-                      1);
-var questions = [q1, q2, q3];
+return text;
+
 var totalScore = 0;
 var eachPoint = 1;
 var shuffleQ = shuffleOrder(questions);
@@ -106,3 +161,4 @@ for( var i = 0; i < shuffleQ.length; ++i) {
     }
 }
 console.log('Game Over.');
+*/
