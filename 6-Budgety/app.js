@@ -54,6 +54,17 @@ var budgetController = (function() {
             data.allItems[type].push(newItem);
             return newItem;
         },
+        deleteItem: function(type, id) {
+            var ids, pos;
+            ids = data.allItems[type].map(function(curr) {
+                return curr.id;
+            });
+
+            pos = ids.indexOf(id);
+            if (pos !== -1) {
+                data.allItems[type].splice(pos, 1);
+            }
+        },
         calculateBudget: function() {
             calculateTotal('inc');
             calculateTotal('exp');
@@ -137,10 +148,10 @@ var UIController = (function() {
             var html, newHtml, domList;
 
             if (type === 'inc') {
-                html = '<div class="item clearfix" id="income-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"><div class="item__value">+%value%</div> <div class="item__delete"> <button class="item__delete--btn"> <i class="ion-ios-close-outline"></i> </button> </div> </div> </div>';
+                html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"><div class="item__value">+%value%</div> <div class="item__delete"> <button class="item__delete--btn"> <i class="ion-ios-close-outline"></i> </button> </div> </div> </div>';
                 domList = document.querySelector(DOMStrings.incomeList);
             } else if (type === 'exp') {
-                html = '<div class="item clearfix"id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">-%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix"id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">-%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
                 domList = document.querySelector(DOMStrings.expenseList);
             }
 
@@ -199,7 +210,11 @@ var controller = (function(budgetCtrl, UICtrl) {
 
         var itemId = event.target.parentNode.parentNode.parentNode.parentNode.id;
         if (itemId) {
+            var split = itemId.split('-');
+            var type = split[0];
+            var id = parseInt(split[1]);
             // 1. delete the item from budget
+            budgetCtrl.deleteItem(type, id);
             // 2. delete the item from UI
             // 3. re-calculate the budget and show it
         }
