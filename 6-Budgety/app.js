@@ -132,7 +132,26 @@ var UIController = (function() {
         container: '.container',
         expensePercLabel: '.item__percentage'
     };
-    
+
+    var formatNumber = function(num, type) {
+        /* format rule
+           1. two digit after point
+           2. decimal
+           3. sign
+        */
+        num = Math.abs(num);
+        num = num.toFixed(2);
+
+        splitNum = num.split('.');
+        intPart = splitNum[0];
+        decPart = splitNum[1];
+
+        if (intPart.length > 3) {
+            intPart = intPart.substr(0, intPart.length - 3) + ',' + intPart.substr(-3);
+        }
+
+        return (type === 'inc' ? '+' : '-') + ' ' + intPart + '.' + decPart;
+    };
     
     return {
         getInput: function() {
@@ -157,9 +176,10 @@ var UIController = (function() {
             fieldsArr[0].focus();
         },
         displayBudget: function(obj) {
-            document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-            document.querySelector(DOMStrings.budgetIncomeLabel).textContent = obj.totalInc;
-            document.querySelector(DOMStrings.budgetExpenseLabel).textContent = obj.totalExp;
+            var budgetType = obj.budget > 0 ? 'inc' : 'exp';
+            document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(obj.budget,  budgetType);
+            document.querySelector(DOMStrings.budgetIncomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+            document.querySelector(DOMStrings.budgetExpenseLabel).textContent = formatNumber(obj.totalExp, 'exp');
 
             if (obj.percentage > 0) {
                 document.querySelector(DOMStrings.budgetPercentageLabel).textContent = obj.percentage + '%';
@@ -199,16 +219,16 @@ var UIController = (function() {
             var html, newHtml, domList;
 
             if (type === 'inc') {
-                html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"><div class="item__value">+%value%</div> <div class="item__delete"> <button class="item__delete--btn"> <i class="ion-ios-close-outline"></i> </button> </div> </div> </div>';
+                html = '<div class="item clearfix" id="inc-%id%"> <div class="item__description">%description%</div> <div class="right clearfix"><div class="item__value">%value%</div> <div class="item__delete"> <button class="item__delete--btn"> <i class="ion-ios-close-outline"></i> </button> </div> </div> </div>';
                 domList = document.querySelector(DOMStrings.incomeList);
             } else if (type === 'exp') {
-                html = '<div class="item clearfix"id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">-%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                html = '<div class="item clearfix"id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
                 domList = document.querySelector(DOMStrings.expenseList);
             }
 
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
             domList.insertAdjacentHTML('beforeend', newHtml);
         }
